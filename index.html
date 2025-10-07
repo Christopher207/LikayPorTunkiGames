@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="EduCards AR: Plataforma educativa con realidad aumentada. Backend Go, Frontend React, Mobile AR. Arquitectura profesional completa con código fuente, Docker y documentación. Valor: $85K USD.">
     <meta name="keywords" content="educación, realidad aumentada, AR, Go, React, arquitectura de software, plataforma educativa, modelos 3D, Three.js, código abierto">
-    <title>EduCards AR - Aprende tocando, visualiza en 3D, domina jugando</title>
+    <title>Likai - Aprende tocando, visualiza en 3D, domina jugando</title>
     
     <!-- Schema.org markup for Google -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "EduCards AR",
+        "name": "Likay",
         "description": "Plataforma educativa que combina tarjetas físicas con realidad aumentada",
         "applicationCategory": "EducationApplication",
         "operatingSystem": "Web",
@@ -34,8 +34,8 @@
     
     <style>
         :root {
-            --primary: #4F46E5;
-            --secondary: #10B981;
+            --primary: #e69226;
+            --secondary: #721edf;
             --accent: #F59E0B;
             --dark: #1F2937;
             --light: #F9FAFB;
@@ -97,7 +97,7 @@
         }
         
         .btn-primary:hover {
-            background-color: #4338CA;
+            background-color: #d18b09;
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
         }
@@ -108,7 +108,7 @@
         }
         
         .btn-secondary:hover {
-            background-color: #059669;
+            background-color: #721edf;
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
         }
@@ -206,7 +206,7 @@
         
         .mockup-container {
             width: 300px;
-            height: 500px;
+            height: 300px;
             background: white;
             border-radius: 20px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
@@ -254,7 +254,7 @@
             right: -50px;
             width: 100px;
             height: 100px;
-            background: #10B981;
+            background: #721edf;
             border-radius: 50%;
             box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
             animation: float 3s ease-in-out infinite;
@@ -780,7 +780,102 @@
             opacity: 1;
             transform: translateY(0);
         }
+        /* Estilos generales del menú */
+        .navbar {
+            background-color: #111827; /* Fondo oscuro */
+            color: white;
+            display: flex;
+            justify-content: space-between; /* Alinea el logo a la izquierda y las opciones a la derecha */
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(233, 142, 5, 0.1); /* Sombra sutil */
+        }
+
+        /* Estilo del nombre del proyecto (Likay) */
+        .navbar-brand {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+
+        /* Contenedor de las opciones de navegación */
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Estilo general de los enlaces de navegación */
+        .nav-item, .dropbtn {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            transition: background-color 0.3s;
+            background-color: transparent; /* Importante para el botón */
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .nav-item:hover, .dropbtn:hover {
+            background-color: #555; /* Cambio de color al pasar el mouse */
+        }
+
+        /* --- Dropdown (Infografías) --- */
+        .dropdown {
+            position: relative; /* Necesario para posicionar el contenido desplegable */
+            display: inline-block;
+        }
+
+        /* Contenido del Dropdown (oculto por defecto) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9; /* Fondo claro para los enlaces internos */
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 100; /* Asegura que esté por encima de otros elementos */
+        }
+
+        /* Enlaces dentro del Dropdown */
+        .dropdown-content a {
+            color: #333; /* Color de texto oscuro */
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd; /* Color de fondo al pasar el mouse en los enlaces internos */
+        }
+
+        /* Mostrar el contenido del dropdown al pasar el mouse por el contenedor */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
     </style>
+    <header class="navbar">
+        <a href="#" class="navbar-brand">Likay</a>
+        <nav class="navbar-nav">
+            <div class="dropdown">
+                <button class="nav-item dropbtn">Infografías</button>
+                <div class="dropdown-content">
+                    <a href="infografiaVape.html">Infografía de Vapeo</a>
+                    <a href="infografiaEucariota.html">Célula Eucariota</a>
+                    <a href="infografiaProcariota.html">Célula Procariota</a>
+                    <a href="infografiaPlanetas.html">Planetas</a>
+                </div>
+            </div>
+            
+            <a href="https://drive.google.com/file/d/1T4NVGAhfXgodrL5ICAfPPtZYhZNWVobK/view?usp=drive_link" download class="nav-item">Descarga</a>
+            
+            <a href="mailto:joseaaron207@gmail.com?subject=Likay - Consultas y Sugerencias" class="nav-item">Contacto</a>
+        </nav>
+    </header>
 </head>
 <body>
     <!-- Hero Section -->
@@ -788,19 +883,16 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1 class="hero-title">Revoluciona la Educación con Realidad Aumentada</h1>
+                    <h1 class="hero-title">Conoce Likay - Un proyecto de Tunki Games</h1>
                     <p class="hero-subtitle">Escanea tarjetas educativas y descubre modelos 3D interactivos que transforman el aprendizaje</p>
                     <div class="hero-cta">
                         <a href="#demo" class="btn btn-primary">Ver Demo</a>
-                        <a href="#contact" class="btn btn-outline">Comenzar Ahora</a>
+                        <a href="#contact" class="btn btn-primary">Comenzar Ahora</a>
                     </div>
                 </div>
                 <div class="hero-image">
                     <div class="mockup-container">
-                        <div class="mockup-screen">
-                            <div class="mockup-card"></div>
-                            <div class="mockup-model"></div>
-                        </div>
+                        <img src="LikayLogo.png" width="350"></img>
                     </div>
                 </div>
             </div>
@@ -810,8 +902,8 @@
     <!-- What is EduCards AR Section -->
     <section class="section" id="what">
         <div class="container">
-            <h2 class="section-title fade-in">¿Qué es EduCards AR?</h2>
-            <p class="section-subtitle fade-in">EduCards AR es una plataforma educativa de vanguardia que fusiona el mundo físico con experiencias digitales inmersivas. Mediante el uso de tarjetas físicas especiales y tecnología de realidad aumentada, transformamos conceptos abstractos en modelos 3D interactivos que los estudiantes pueden explorar, manipular y comprender de manera profunda.</p>
+            <h2 class="section-title fade-in">¿Qué es Likay?</h2>
+            <p class="section-subtitle fade-in">Likay es una plataforma educativa de vanguardia que fusiona el mundo físico con experiencias digitales inmersivas. Mediante el uso de tarjetas físicas especiales y tecnología de realidad aumentada, transformamos conceptos abstractos en modelos 3D interactivos que los estudiantes pueden explorar, manipular y comprender de manera profunda.</p>
             
             <div class="cards-grid">
                 <div class="card animate-on-scroll">
@@ -819,7 +911,7 @@
                         <i class="fas fa-qrcode"></i>
                     </div>
                     <h3 class="card-title">📱 Escanea</h3>
-                    <p class="card-description">Cada tarjeta contiene un código QR único que, al ser escaneado con un dispositivo móvil, proyecta un modelo tridimensional relacionado con el tema de estudio.</p>
+                    <p class="card-description">Cada lado de la tarjeta es escaneable! El frontal, al ser escaneado con la aplicación, revela un modelo tridimensional para visualizar el tema de interés. El reverso tiene un código QR que lleva a más información sobre el tema en una infografía.</p>
                 </div>
                 
                 <div class="card animate-on-scroll">
@@ -848,18 +940,9 @@
             <p class="section-subtitle fade-in">Arquitectura limpia, escalable y lista para producción</p>
             
             <div class="tech-grid">
-                <div class="tech-badge animate-on-scroll">Backend: Go + Gin Framework</div>
-                <div class="tech-badge animate-on-scroll">Database: PostgreSQL</div>
-                <div class="tech-badge animate-on-scroll">Auth: JWT</div>
-                <div class="tech-badge animate-on-scroll">Frontend: React 18 + TypeScript</div>
-                <div class="tech-badge animate-on-scroll">3D: Three.js</div>
-                <div class="tech-badge animate-on-scroll">Styling: Tailwind CSS</div>
-                <div class="tech-badge animate-on-scroll">Mobile: React Native + Expo</div>
-                <div class="tech-badge animate-on-scroll">AR: WebAR</div>
-                <div class="tech-badge animate-on-scroll">DevOps: Docker + Nginx</div>
-                <div class="tech-badge animate-on-scroll">CI/CD: GitHub Actions</div>
-                <div class="tech-badge animate-on-scroll">Cloud: AWS S3 / MinIO</div>
-                <div class="tech-badge animate-on-scroll">API: Google Drive</div>
+                <div class="tech-badge animate-on-scroll">Backend: Vuforia para AR</div>
+                <div class="tech-badge animate-on-scroll">Android: Sistema operativo para teléfonos inteligentes (Próximamente en iOS también!)</div>
+                <div class="tech-badge animate-on-scroll">Unity: Motor para experiencias AR 3D</div>
             </div>
         </div>
     </section>
@@ -875,49 +958,34 @@
                     <div class="feature-icon">
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
-                    <h3 class="feature-title">🎓 Panel de Administración</h3>
-                    <p class="feature-description">Gestiona tarjetas, modelos 3D y contenido educativo con una interfaz intuitiva</p>
+                    <h3 class="feature-title">🎓 Aplicación educativa</h3>
+                    <p class="feature-description">Por sobre todo, el objetivo de la plataforma es ofrecer un método innovador para potenciar la educación.</p>
+                </div>
+
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 class="feature-title">🎮 Sistema de Interacción</h3>
+                    <p class="feature-description">Puedes rotar el modelo para apreciarlo mejor en distintos ángulos.</p>
                 </div>
                 
                 <div class="feature-card animate-on-scroll">
                     <div class="feature-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <h3 class="feature-title">📊 Dashboard Analítico</h3>
-                    <p class="feature-description">Métricas en tiempo real y reportes de aprendizaje para tomar decisiones informadas</p>
+                    <h3 class="feature-title">📊 Optimización de recursos</h3>
+                    <p class="feature-description">Modelos tridimensionales pensando en equimos móbiles de potencia reducida</p>
                 </div>
-                
-                <div class="feature-card animate-on-scroll">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3 class="feature-title">🔐 Sistema de Autenticación</h3>
-                    <p class="feature-description">JWT seguro con roles admin/estudiante para control de acceso</p>
-                </div>
-                
+
                 <div class="feature-card animate-on-scroll">
                     <div class="feature-icon">
                         <i class="fas fa-box-open"></i>
                     </div>
-                    <h3 class="feature-title">📦 Gestión de Modelos 3D</h3>
-                    <p class="feature-description">Sube archivos GLB/GLTF hasta 50MB con soporte para modelos complejos</p>
+                    <h3 class="feature-title">📦 Applicación Offline</h3>
+                    <p class="feature-description">Los modelos se encuentran precargados. Visualízalos incluso sin conexión!</p>
                 </div>
                 
-                <div class="feature-card animate-on-scroll">
-                    <div class="feature-icon">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <h3 class="feature-title">🎮 Sistema de Quizzes</h3>
-                    <p class="feature-description">Evaluaciones interactivas con puntuación y retroalimentación inmediata</p>
-                </div>
-                
-                <div class="feature-card animate-on-scroll">
-                    <div class="feature-icon">
-                        <i class="fas fa-cloud-download-alt"></i>
-                    </div>
-                    <h3 class="feature-title">☁️ Feedback Automático</h3>
-                    <p class="feature-description">Sincronización con Google Sheets para seguimiento automático del progreso</p>
-                </div>
             </div>
         </div>
     </section>
@@ -935,7 +1003,7 @@
                     </div>
                     <div class="use-case-content">
                         <h3 class="use-case-title">🧬 Biología</h3>
-                        <p class="use-case-description">Tarjeta de célula eucariota → Modelo 3D interactivo con orgánulos. Los estudiantes pueden explorar cada componente celular en 3D y comprender su función.</p>
+                        <p class="use-case-description">Tarjetas de célula eucariota y procariota → Modelo 3D interactivo con orgánulos. Los estudiantes pueden explorar cada componente celular en 3D y comprender su función.</p>
                     </div>
                 </div>
                 
@@ -944,104 +1012,24 @@
                         <i class="fas fa-atom"></i>
                     </div>
                     <div class="use-case-content">
-                        <h3 class="use-case-title">⚛️ Física</h3>
-                        <p class="use-case-description">Tarjeta de átomo → Visualización 3D de estructura atómica. Observa los electrones, protones y neutrones en movimiento para entender la teoría atómica.</p>
+                        <h3 class="use-case-title">⚛️ Salud</h3>
+                        <p class="use-case-description">Tarjeta de prevención de vapeo → Visualización 3D de estructura pulmonar. Observa los órganos afectados por el uso de vape.</p>
                     </div>
                 </div>
                 
                 <div class="use-case-card animate-on-scroll">
                     <div class="use-case-image">
-                        <i class="fas fa-mountain"></i>
+                        <i class="fa-solid fa-earth-americas"></i>
                     </div>
                     <div class="use-case-content">
-                        <h3 class="use-case-title">🌍 Geografía</h3>
-                        <p class="use-case-description">Tarjeta de ecosistema → Exploración AR de bosque amazónico. Vive una experiencia inmersiva en el corazón de la selva tropical.</p>
+                        <h3 class="use-case-title">🌍 Ciencia espacial</h3>
+                        <p class="use-case-description">Tarjeta de sistema solar → Exploración AR de los planetas del sistema solar. Vive una experiencia inmersiva en el vasto espacio exterior.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Architecture Section -->
-    <section class="section" id="architecture">
-        <div class="container">
-            <h2 class="section-title fade-in">Arquitectura Técnica</h2>
-            <p class="section-subtitle fade-in">Stack completo visible con conexiones animadas</p>
-            
-            <div class="architecture-diagram">
-                <div class="architecture-grid">
-                    <div class="arch-node">
-                        <div class="arch-title">Frontend</div>
-                        <div>React + Three.js</div>
-                    </div>
-                    
-                    <div class="arch-node">
-                        <div class="arch-title">API Gateway</div>
-                        <div>Nginx</div>
-                    </div>
-                    
-                    <div class="arch-node">
-                        <div class="arch-title">Backend</div>
-                        <div>Go + Gin Framework</div>
-                    </div>
-                    
-                    <div class="arch-node">
-                        <div class="arch-title">Database</div>
-                        <div>PostgreSQL</div>
-                    </div>
-                    
-                    <div class="arch-node">
-                        <div class="arch-title">Caching</div>
-                        <div>Redis</div>
-                    </div>
-                    
-                    <div class="arch-node">
-                        <div class="arch-title">Storage</div>
-                        <div>MinIO / AWS S3</div>
-                    </div>
-                    
-                    <div class="arch-node">
-                        <div class="arch-title">APIs Externas</div>
-                        <div>Google Drive</div>
-                    </div>
-                </div>
-                
-                <div class="arch-connections">
-                    <!-- Visual connections would be implemented with SVG or CSS, simplified for this implementation -->
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Metrics Section -->
-    <section class="section" id="metrics">
-        <div class="container">
-            <h2 class="section-title fade-in">Métricas del Proyecto</h2>
-            <p class="section-subtitle fade-in">Números que reflejan la complejidad y valor del sistema</p>
-            
-            <div class="metrics-grid">
-                <div class="metric-card animate-on-scroll">
-                    <div class="metric-number" data-target="5700">0</div>
-                    <div class="metric-label">Líneas de Código</div>
-                </div>
-                
-                <div class="metric-card animate-on-scroll">
-                    <div class="metric-number" data-target="65">0</div>
-                    <div class="metric-label">Archivos Generados</div>
-                </div>
-                
-                <div class="metric-card animate-on-scroll">
-                    <div class="metric-number" data-target="85000">0</div>
-                    <div class="metric-label">Valor Mercado Estimado (USD)</div>
-                </div>
-                
-                <div class="metric-card animate-on-scroll">
-                    <div class="metric-number" data-target="190">0</div>
-                    <div class="metric-label">Horas de Desarrollo Ahorradas</div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Target Audience Section -->
     <section class="section" id="audience">
@@ -1055,7 +1043,7 @@
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
                     <h3 class="audience-title">👨‍🏫 Educadores</h3>
-                    <p class="audience-description">Crea contenido educativo interactivo sin programar. Plataforma intuitiva para diseñar tarjetas AR y actividades.</p>
+                    <p class="audience-description">Crea contenido educativo interactivo innovador con tecnología AR.</p>
                 </div>
                 
                 <div class="audience-card animate-on-scroll">
@@ -1070,47 +1058,9 @@
                     <div class="audience-avatar">
                         <i class="fas fa-code"></i>
                     </div>
-                    <h3 class="audience-title">💻 Desarrolladores</h3>
-                    <p class="audience-description">Estudia arquitectura profesional y reúsa código. Documentación completa y patrones de diseño probados.</p>
+                    <h3 class="audience-title">💻 Estudiantes</h3>
+                    <p class="audience-description">Aprovecha esta oportunidad de ver como nunca antes conceptos enseñados en el colegio.</p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Final CTA Section -->
-    <section class="section" id="contact">
-        <div class="container">
-            <h2 class="section-title fade-in">¿Listo para Transformar la Educación?</h2>
-            <p class="section-subtitle fade-in">Obtén acceso al código completo, documentación y guía de implementación</p>
-            
-            <div class="cta-form">
-                <form id="projectForm">
-                    <div class="form-group">
-                        <label for="name">Nombre</label>
-                        <input type="text" id="name" required placeholder="Tu nombre completo">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" required placeholder="tu@email.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="usage">Tipo de Uso</label>
-                        <select id="usage" required>
-                            <option value="">Selecciona una opción</option>
-                            <option value="educational">Educativo</option>
-                            <option value="commercial">Comercial</option>
-                            <option value="personal">Estudio Personal</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Descargar Proyecto Completo</button>
-                </form>
-                
-                <p class="form-note">
-                    Incluye código fuente, Docker setup, y documentación de 25,000+ palabras
-                </p>
             </div>
         </div>
     </section>
@@ -1141,16 +1091,15 @@
                 <div class="footer-section">
                     <h3>Tecnologías</h3>
                     <div class="footer-tech">
-                        <span class="tech-badge-small">Go</span>
-                        <span class="tech-badge-small">React</span>
-                        <span class="tech-badge-small">Docker</span>
-                        <span class="tech-badge-small">PostgreSQL</span>
+                        <span class="tech-badge-small">Unity</span>
+                        <span class="tech-badge-small">Unity URP</span>
+                        <span class="tech-badge-small">Vuforia</span>
                     </div>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>© 2025 EduCards AR - Arquitectura Profesional para Educación</p>
+                <p>© 2025 Likay - Arquitectura Profesional para Educación - Una iniciativa de Tunki Games</p>
             </div>
         </div>
     </footer>
