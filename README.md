@@ -10,3 +10,6 @@ Las tarjetas también incluyen en su reverso un código QR que redirecciona a un
 Las tarjetas físicas para activar las experiencias.
 
 Un teléfono celular compatible con la tecnología de realidad aumentada. Puedes consultar una lista de dispositivos compatibles aquí: https://developers.google.com/ar/devices?hl=es-419#google_play_devices
+
+## Nuestro sitio web
+Visítanos en www.tunkigames.xyz para saber más de Likay
