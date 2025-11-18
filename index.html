@@ -123,7 +123,35 @@
             background-color: var(--primary);
             color: white;
         }
-        
+        /* Agrega estos estilos a tu sección <style> */
+
+        .image-item {
+            display: flex;
+            flex-direction: column; /* Apila imagen y botón */
+            align-items: center;
+            gap: 15px; /* Espacio entre imagen y botón */
+            text-align: center;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--secondary); /* Color morado */
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .download-btn:hover {
+            background-color: #5d17c7; /* Tono más oscuro de morado */
+            transform: translateY(-2px);
+        }
+
+
         .section {
             padding: 80px 0;
         }
@@ -1042,18 +1070,35 @@
             </p>
             
             <div style="display: flex; justify-content: center; gap: 30px; margin-top: 40px; flex-wrap: wrap;">
-                <div style="text-align: center;">
+                
+                <div class="image-item animate-on-scroll">
                     <img src="1.png" alt="Tarjeta de ejemplo 1" style="max-width: 250px; height: auto; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <a href="1.png" download="Likay_Tarjeta_1.png" class="download-btn">
+                        <i class="fas fa-download"></i> Descargar
+                    </a>
                 </div>
-                <div style="text-align: center;">
+
+                <div class="image-item animate-on-scroll">
                     <img src="3.png" alt="Tarjeta de ejemplo 3" style="max-width: 250px; height: auto; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <a href="3.png" download="Likay_Tarjeta_3.png" class="download-btn">
+                        <i class="fas fa-download"></i> Descargar
+                    </a>
                 </div>
-                <div style="text-align: center;">
+
+                <div class="image-item animate-on-scroll">
                     <img src="Nazca.png" alt="Tarjeta de ejemplo Nazca" style="max-width: 250px; height: auto; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <a href="Nazca.png" download="Likay_Tarjeta_Nazca.png" class="download-btn">
+                        <i class="fas fa-download"></i> Descargar
+                    </a>
                 </div>
-                <div style="text-align: center;">
+
+                <div class="image-item animate-on-scroll">
                     <img src="wari.png" alt="Tarjeta de ejemplo Wari" style="max-width: 250px; height: auto; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <a href="wari.png" download="Likay_Tarjeta_Wari.png" class="download-btn">
+                        <i class="fas fa-download"></i> Descargar
+                    </a>
                 </div>
+                
             </div>
         </div>
     </section>
