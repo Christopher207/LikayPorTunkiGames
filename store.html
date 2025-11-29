@@ -26,6 +26,31 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="LikayLogo.png" type="image/png">
+
+    <!-- Firebase App & Auth SDKs -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBJzr2zusCZGSm-wIIF705nzBRyQTUWg48",
+        authDomain: "likay-2ad45.firebaseapp.com",
+        projectId: "likay-2ad45",
+        storageBucket: "likay-2ad45.firebasestorage.app",
+        messagingSenderId: "126625156506",
+        appId: "1:126625156506:web:9b98abf33044cda56fbe23",
+        measurementId: "G-1KBL2LEK09"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      window.firebaseApp = app;
+      window.auth = auth;
+    </script>
     <style>
         :root {
             --primary: #e69226;
@@ -562,7 +587,7 @@
         <nav class="navbar-nav">
             <a href="index.html" class="nav-item">Inicio</a>
             <a href="store.html" class="nav-item">Tienda</a>
-            <a href="my-collections.html" class="nav-item" id="myCollectionsBtn">Mi Colección</a>
+            <a href="#" class="nav-item" id="myCollectionsBtn">Mi Colección</a>
             <a href="#" class="nav-item" id="loginBtn">Iniciar Sesión</a>
             <a href="#" class="nav-item" id="logoutBtn" style="display: none;">Cerrar Sesión</a>
         </nav>
@@ -658,90 +683,109 @@
         </div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+        // Use the globally available auth instance
+        const auth = window.auth;
+
         // Navigation and authentication functionality
         document.addEventListener('DOMContentLoaded', function() {
             // Navigation elements
             const loginBtn = document.getElementById('loginBtn');
             const logoutBtn = document.getElementById('logoutBtn');
             const myCollectionsBtn = document.getElementById('myCollectionsBtn');
-            
-            // Check authentication status on page load
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (currentUser) {
-                loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'block';
-                
-                // If it's an admin, hide myCollections link
-                if (currentUser.isAdmin) {
-                    myCollectionsBtn.style.display = 'none';
+
+            // Listen to auth state changes
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    loginBtn.style.display = 'none';
+                    logoutBtn.style.display = 'block';
+
+                    // Admin check would require additional Firebase functions or Firestore
+                    // For now, we'll assume regular user
+                    myCollectionsBtn.style.display = 'block';
+                } else {
+                    loginBtn.style.display = 'block';
+                    logoutBtn.style.display = 'none';
+                    myCollectionsBtn.style.display = 'none'; // Hide if not logged in
                 }
-            } else {
-                loginBtn.style.display = 'block';
-                logoutBtn.style.display = 'none';
-            }
-            
+            });
+
             // Login button event
             loginBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 window.location.href = 'index.html';
             });
-            
+
             // Logout button event
             logoutBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                localStorage.removeItem('currentUser');
-                window.location.reload();
+                signOut(auth)
+                    .then(() => {
+                        // Sign-out successful
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        console.error("Logout error:", error.message);
+                        alert('Error al cerrar sesión: ' + error.message);
+                    });
             });
-            
+
             // My Collections button event
             myCollectionsBtn.addEventListener('click', function(e) {
-                // Check if user is logged in
-                const user = JSON.parse(localStorage.getItem('currentUser'));
+                e.preventDefault();
+                // Check if user is logged in via Firebase
+                const user = auth.currentUser;
                 if (user) {
-                    if (!user.isAdmin) {
-                        window.location.href = 'my-collections.html';
-                    } else {
-                        // Admin cannot access my collections
-                        alert('Los administradores no tienen acceso a Mi Colección');
-                    }
+                    window.location.href = 'my-collections.html';
                 } else {
                     // Redirect to login if not logged in
                     window.location.href = 'index.html';
                 }
             });
-            
+
             // Add event listeners to buy buttons
             const buyButtons = document.querySelectorAll('.product-buy-btn');
             buyButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                    
-                    if (!currentUser) {
+                    // Check if user is logged in via Firebase
+                    const user = auth.currentUser;
+
+                    if (!user) {
                         // Redirect to login if not logged in
                         alert('Por favor inicia sesión para realizar una compra');
                         window.location.href = 'index.html';
                         return;
                     }
-                    
-                    if (currentUser.isAdmin) {
-                        alert('Los administradores no pueden realizar compras');
-                        return;
-                    }
-                    
+
+                    // For admin check, we'd need to check custom claims or Firestore
+                    // For simplicity, we're just checking if user exists
                     const productId = this.getAttribute('data-product-id');
                     const productName = this.getAttribute('data-product-name');
-                    
+
                     // Redirect to payment page
-                    localStorage.setItem('selectedProduct', JSON.stringify({
+                    // We can store the selected product in session storage instead of localStorage
+                    sessionStorage.setItem('selectedProduct', JSON.stringify({
                         id: productId,
                         name: productName,
                         price: 1.00
                     }));
-                    
+
                     window.location.href = 'payment.html';
                 });
             });
+
+            // Initialize animations for product cards
+            const animateOnScroll = () => {
+                const elements = document.querySelectorAll('.animate-on-scroll');
+                elements.forEach(element => {
+                    element.classList.add('appear');
+                });
+            };
+
+            // Run animations after a short delay to ensure DOM is fully loaded
+            setTimeout(animateOnScroll, 100);
         });
     </script>
 </body>

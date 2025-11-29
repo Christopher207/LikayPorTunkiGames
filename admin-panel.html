@@ -25,6 +25,33 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="LikayLogo.png" type="image/png">
+
+    <!-- Firebase App & Auth SDKs -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBJzr2zusCZGSm-wIIF705nzBRyQTUWg48",
+        authDomain: "likay-2ad45.firebaseapp.com",
+        projectId: "likay-2ad45",
+        storageBucket: "likay-2ad45.firebasestorage.app",
+        messagingSenderId: "126625156506",
+        appId: "1:126625156506:web:9b98abf33044cda56fbe23",
+        measurementId: "G-1KBL2LEK09"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      window.firebaseApp = app;
+      window.auth = auth;
+      window.db = db;
+    </script>
     <style>
         :root {
             --primary: #e69226;
@@ -380,7 +407,7 @@
         <nav class="navbar-nav">
             <a href="index.html" class="nav-item">Inicio</a>
             <a href="store.html" class="nav-item">Tienda</a>
-            <a href="my-collections.html" class="nav-item" id="myCollectionsBtn">Mi Colección</a>
+            <a href="#" class="nav-item" id="myCollectionsBtn">Mi Colección</a>
             <a href="#" class="nav-item" id="loginBtn">Iniciar Sesión</a>
             <a href="#" class="nav-item" id="logoutBtn" style="display: none;">Cerrar Sesión</a>
         </nav>
@@ -467,11 +494,11 @@
                 // Show admin panel
                 noAccessMessage.style.display = 'none';
                 adminPanel.style.display = 'block';
-                
+
                 loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
                 myCollectionsBtn.style.display = 'none';
-                
+
                 // Load users
                 loadUsers();
             } else {
@@ -500,6 +527,7 @@
             
             // My Collections button event
             myCollectionsBtn.addEventListener('click', function(e) {
+                e.preventDefault();
                 // Check if user is logged in
                 const user = JSON.parse(localStorage.getItem('currentUser'));
                 if (user) {
@@ -592,6 +620,200 @@
                     // Show confirmation message
                     const user = users[userIndex];
                     alert(`Acceso ${user.canAccessCards ? 'permitido' : 'denegado'} para ${user.email}`);
+                }
+            }
+        });
+    </script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut, getIdTokenResult } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+        // Use the globally available auth and Firestore instances
+        const auth = window.auth;
+        const db = window.db;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation elements
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const myCollectionsBtn = document.getElementById('myCollectionsBtn');
+
+            // Admin panel elements
+            const noAccessMessage = document.getElementById('noAccessMessage');
+            const adminPanel = document.getElementById('adminPanel');
+            const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+            const usersTableBody = document.getElementById('usersTableBody');
+
+            // Listen to auth state changes
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    // Check if user has admin privileges (using custom claims)
+                    try {
+                        const idTokenResult = await getIdTokenResult(user);
+                        if (idTokenResult.claims.admin) {
+                            // Show admin panel
+                            noAccessMessage.style.display = 'none';
+                            adminPanel.style.display = 'block';
+
+                            loginBtn.style.display = 'none';
+                            logoutBtn.style.display = 'block';
+                            myCollectionsBtn.style.display = 'none';
+
+                            // Load users from Firestore
+                            loadUsers();
+                        } else {
+                            // Regular user - redirect to main page
+                            alert('Acceso denegado. Solo administradores pueden acceder a esta sección.');
+                            window.location.href = 'index.html';
+                        }
+                    } catch (error) {
+                        console.error("Error checking admin status:", error);
+                        alert('Error al verificar los permisos de administrador.');
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    // Not logged in
+                    loginBtn.style.display = 'block';
+                    logoutBtn.style.display = 'none';
+                    myCollectionsBtn.style.display = 'none';
+
+                    noAccessMessage.innerHTML = `
+                        <h3>Acceso Restringido</h3>
+                        <p>Solo los administradores autorizados pueden acceder a esta sección.</p>
+                        <p>Por favor, inicia sesión con credenciales de administrador.</p>
+                    `;
+                    noAccessMessage.style.display = 'block';
+                    adminPanel.style.display = 'none';
+
+                    alert('Por favor inicia sesión como administrador para acceder al panel de administración.');
+                    window.location.href = 'index.html';
+                }
+            });
+
+            // Login button event
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'index.html';
+            });
+
+            // Logout button event
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                signOut(auth)
+                    .then(() => {
+                        // Sign-out successful
+                        window.location.href = 'index.html';
+                    })
+                    .catch((error) => {
+                        console.error("Logout error:", error.message);
+                        alert('Error al cerrar sesión: ' + error.message);
+                    });
+            });
+
+            // My Collections button event
+            myCollectionsBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Check if user is logged in via Firebase
+                const user = auth.currentUser;
+                if (user) {
+                    // Admin goes to admin panel
+                    window.location.href = 'admin-panel.html';
+                } else {
+                    // Redirect to login if not logged in
+                    window.location.href = 'index.html';
+                }
+            });
+
+            // Admin logout button event
+            adminLogoutBtn.addEventListener('click', function() {
+                signOut(auth)
+                    .then(() => {
+                        // Sign-out successful
+                        window.location.href = 'index.html';
+                    })
+                    .catch((error) => {
+                        console.error("Logout error:", error.message);
+                        alert('Error al cerrar sesión: ' + error.message);
+                    });
+            });
+
+            // Function to load users from Firestore
+            async function loadUsers() {
+                try {
+                    const usersCollection = collection(db, "users");
+                    const usersSnapshot = await getDocs(usersCollection);
+
+                    // Clear table
+                    usersTableBody.innerHTML = '';
+
+                    // Add each user to the table
+                    usersSnapshot.forEach((userDoc) => {
+                        const userData = userDoc.data();
+                        const userId = userDoc.id;
+
+                        // Skip admin user or users without proper data
+                        if (userId === 'adminLikay2025' || !userData.email) return;
+
+                        // Get last 3 digits of phone number
+                        const lastThreeDigits = userData.phone ? userData.phone.slice(-3) : 'N/A';
+
+                        // Create table row
+                        const row = document.createElement('tr');
+
+                        // Format phone if it exists
+                        const phoneDisplay = userData.phone ? `***${lastThreeDigits}` : 'No registrado';
+
+                        row.innerHTML = `
+                            <td>${userData.email || 'N/A'}</td>
+                            <td>${phoneDisplay}</td>
+                            <td>${userData.canAccessCards ? 'Sí' : 'No'}</td>
+                            <td>
+                                <button class="toggle-access ${userData.canAccessCards ? 'deny' : 'allow'}"
+                                    data-user-id="${userId}">
+                                    ${userData.canAccessCards ? 'Denegar Acceso' : 'Permitir Acceso'}
+                                </button>
+                            </td>
+                        `;
+
+                        usersTableBody.appendChild(row);
+                    });
+
+                    // Add event listeners to the toggle buttons
+                    document.querySelectorAll('.toggle-access').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const userId = this.getAttribute('data-user-id');
+                            toggleUserAccess(userId);
+                        });
+                    });
+                } catch (error) {
+                    console.error("Error loading users:", error);
+                    alert('Error al cargar la lista de usuarios.');
+                }
+            }
+
+            // Function to toggle user access in Firestore
+            async function toggleUserAccess(userId) {
+                try {
+                    const userRef = doc(db, "users", userId);
+                    const userDoc = await getDoc(userRef);
+
+                    if (userDoc.exists()) {
+                        const currentAccess = userDoc.data().canAccessCards || false;
+                        await updateDoc(userRef, {
+                            canAccessCards: !currentAccess
+                        });
+
+                        // Reload the table to reflect changes
+                        loadUsers();
+
+                        // Show confirmation message
+                        alert(`Acceso ${!currentAccess ? 'permitido' : 'denegado'} para el usuario.`);
+                    } else {
+                        alert('Usuario no encontrado.');
+                    }
+                } catch (error) {
+                    console.error("Error updating user access:", error);
+                    alert('Error al actualizar el acceso del usuario.');
                 }
             }
         });

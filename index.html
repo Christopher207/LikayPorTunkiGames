@@ -32,6 +32,31 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="LikayLogo.png" type="image/png">
+
+    <!-- Firebase App & Auth SDKs -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBJzr2zusCZGSm-wIIF705nzBRyQTUWg48",
+        authDomain: "likay-2ad45.firebaseapp.com",
+        projectId: "likay-2ad45",
+        storageBucket: "likay-2ad45.firebasestorage.app",
+        messagingSenderId: "126625156506",
+        appId: "1:126625156506:web:9b98abf33044cda56fbe23",
+        measurementId: "G-1KBL2LEK09"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      window.firebaseApp = app;
+      window.auth = auth;
+    </script>
     <style>
         :root {
             --primary: #e69226;
@@ -899,6 +924,8 @@
                 </div>
             </div>
 
+            <a href="store.html" class="nav-item">Tienda</a>
+
             <a href="https://play.google.com/store/apps/details?id=com.TunkiGames.Likay&pcampaignid=web_share" download class="nav-item">Descarga</a>
 
             <a href="politica-privacidad.html" class="nav-item">Política de Privacidad</a>
@@ -1356,7 +1383,14 @@
         <i class="fas fa-arrow-up"></i>
     </div>
 
-    <script>
+    <script type="module">
+        // Import Firebase functions
+        import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+        // Use the globally available auth instance
+        const auth = window.auth;
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1471,7 +1505,6 @@
             }, 100);
         });
 
-        // Authentication System
         // Modal elements
         const modal = document.getElementById('loginModal');
         const loginBtn = document.getElementById('loginBtn');
@@ -1499,13 +1532,11 @@
         // Show My Collections page if logged in
         myCollectionsBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            // Check if user is logged in
-            const user = JSON.parse(localStorage.getItem('currentUser'));
+            // Check authentication status via Firebase
+            const user = auth.currentUser;
             if (user) {
-                // Redirect to My Collections page
                 window.location.href = 'my-collections.html';
             } else {
-                // Show login modal if not logged in
                 modal.style.display = 'block';
                 showLoginForm();
             }
@@ -1550,21 +1581,14 @@
         }
 
         // Login functionality
-        loginSubmit.addEventListener('click', function() {
+        loginSubmit.addEventListener('click', async function() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // Get users from localStorage
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-
-            // Find user with matching email and password
-            const user = users.find(u => {
-                return u.email === email && u.password === hashPassword(password);
-            });
-
-            if (user) {
-                // Store current user
-                localStorage.setItem('currentUser', JSON.stringify(user));
+            try {
+                // Try to sign in with Firebase
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
                 // Update UI
                 updateUI(true, user.email);
@@ -1574,34 +1598,26 @@
 
                 // Show success message
                 alert('¡Inicio de sesión exitoso!');
-            } else {
+            } catch (error) {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error("Login error:", errorCode, errorMessage);
+
                 // Check if admin credentials are entered
-                if (email === 'adminLikay2025' && password === 'ESAN2100') {
-                    // Store admin user
-                    const adminUser = {
-                        email: 'adminLikay2025',
-                        password: hashPassword('ESAN2100'),
-                        phone: 'admin',
-                        isAdmin: true
-                    };
-                    localStorage.setItem('currentUser', JSON.stringify(adminUser));
-
-                    // Update UI
-                    updateUI(true, email);
-
-                    // Close modal
+                if (email === 'adminLikay2025@example.com' && password === 'ESAN2100') {
+                    // For demo purposes, we'll handle admin differently
+                    // In a real implementation, admin would be a special user in Firebase
+                    alert('Inicio de sesión de administrador - funcionalidad simulada');
+                    updateUI(true, email, true); // isAdmin = true
                     modal.style.display = 'none';
-
-                    // Show success message
-                    alert('¡Inicio de sesión de administrador exitoso!');
                 } else {
-                    alert('Correo electrónico o contraseña incorrectos');
+                    alert('Correo electrónico o contraseña incorrectos: ' + errorMessage);
                 }
             }
         });
 
         // Register functionality
-        registerSubmit.addEventListener('click', function() {
+        registerSubmit.addEventListener('click', async function() {
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
             const phone = document.getElementById('regPhone').value;
@@ -1626,74 +1642,64 @@
                 return;
             }
 
-            // Get existing users
-            const users = JSON.parse(localStorage.getItem('users')) || [];
+            try {
+                // Create user in Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
-            // Check if user already exists
-            const existingUser = users.find(u => u.email === email);
-            if (existingUser) {
-                alert('Ya existe un usuario con este correo electrónico');
-                return;
+                // Create user document in Firestore
+                const db = getFirestore(window.firebaseApp);
+                await setDoc(doc(db, "users", user.uid), {
+                    email: email,
+                    phone: phone,
+                    purchasedCards: [],
+                    canAccessCards: false,
+                    createdAt: new Date(),
+                    displayName: email.split('@')[0] // Use part of email as display name
+                });
+
+                // Update UI
+                updateUI(true, user.email);
+
+                // Close modal
+                modal.style.display = 'none';
+
+                // Show success message
+                alert('¡Registro exitoso! Por favor haga una compra para acceder a las tarjetas.');
+            } catch (error) {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error("Registration error:", errorCode, errorMessage);
+                alert('Error en el registro: ' + errorMessage);
             }
-
-            // Create new user
-            const newUser = {
-                email: email,
-                password: hashPassword(password),
-                phone: phone,
-                purchasedCards: [],
-                canAccessCards: false // Initially, user cannot access cards until payment is verified
-            };
-
-            // Add user to users array
-            users.push(newUser);
-
-            // Save users to localStorage
-            localStorage.setItem('users', JSON.stringify(users));
-
-            // Store current user
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
-
-            // Update UI
-            updateUI(true, email);
-
-            // Close modal
-            modal.style.display = 'none';
-
-            // Show success message
-            alert('¡Registro exitoso! Por favor haga una compra para acceder a las tarjetas.');
         });
 
         // Logout functionality
         logoutBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            localStorage.removeItem('currentUser');
-            updateUI(false);
-            alert('Sesión cerrada exitosamente');
+            auth.signOut()
+                .then(() => {
+                    // Sign-out successful
+                    updateUI(false);
+                    alert('Sesión cerrada exitosamente');
+                })
+                .catch((error) => {
+                    console.error("Logout error:", error.message);
+                    alert('Error al cerrar sesión: ' + error.message);
+                });
         });
 
-        // Hash password function (simple hash for localStorage)
-        function hashPassword(password) {
-            // Simple hash function for demonstration purposes
-            // For production, use a more secure method
-            let hash = 0;
-            for (let i = 0; i < password.length; i++) {
-                const char = password.charCodeAt(i);
-                hash = (hash << 5) - hash + char;
-                hash = hash & hash; // Convert to 32-bit integer
-            }
-            return hash.toString();
-        }
-
         // Update UI based on authentication status
-        function updateUI(isLoggedIn, userEmail = null) {
+        function updateUI(isLoggedIn, userEmail = null, isAdmin = false) {
             if (isLoggedIn) {
-                // Check if current user is admin
-                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                if (currentUser && currentUser.isAdmin) {
+                if (userEmail === 'adminLikay2025@example.com') {
+                    isAdmin = true;
+                }
+
+                if (isAdmin) {
                     loginBtn.style.display = 'none';
                     logoutBtn.style.display = 'block';
-                    myCollectionsBtn.style.display = 'block';
+                    myCollectionsBtn.style.display = 'none'; // Admins don't access regular collections
                     // Add admin-specific navigation
                     const adminLink = document.createElement('a');
                     adminLink.href = '#';
@@ -1709,6 +1715,11 @@
                     loginBtn.style.display = 'none';
                     logoutBtn.style.display = 'block';
                     myCollectionsBtn.style.display = 'block';
+                    // Remove admin panel link if exists
+                    const adminPanelLink = document.getElementById('adminPanel');
+                    if (adminPanelLink) {
+                        adminPanelLink.remove();
+                    }
                 }
             } else {
                 loginBtn.style.display = 'block';
@@ -1724,12 +1735,14 @@
 
         // Check authentication status on page load
         document.addEventListener('DOMContentLoaded', function() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (currentUser) {
-                updateUI(true, currentUser.email);
-            } else {
-                updateUI(false);
-            }
+            // Listen to auth state changes
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    updateUI(true, user.email);
+                } else {
+                    updateUI(false);
+                }
+            });
         });
     </script>
 </body>

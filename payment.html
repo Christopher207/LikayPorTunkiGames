@@ -25,6 +25,31 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="LikayLogo.png" type="image/png">
+
+    <!-- Firebase App & Auth SDKs -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBJzr2zusCZGSm-wIIF705nzBRyQTUWg48",
+        authDomain: "likay-2ad45.firebaseapp.com",
+        projectId: "likay-2ad45",
+        storageBucket: "likay-2ad45.firebasestorage.app",
+        messagingSenderId: "126625156506",
+        appId: "1:126625156506:web:9b98abf33044cda56fbe23",
+        measurementId: "G-1KBL2LEK09"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      window.firebaseApp = app;
+      window.auth = auth;
+    </script>
     <style>
         :root {
             --primary: #e69226;
@@ -370,7 +395,7 @@
         <nav class="navbar-nav">
             <a href="index.html" class="nav-item">Inicio</a>
             <a href="store.html" class="nav-item">Tienda</a>
-            <a href="my-collections.html" class="nav-item" id="myCollectionsBtn">Mi Colección</a>
+            <a href="#" class="nav-item" id="myCollectionsBtn">Mi Colección</a>
             <a href="#" class="nav-item" id="loginBtn">Iniciar Sesión</a>
             <a href="#" class="nav-item" id="logoutBtn" style="display: none;">Cerrar Sesión</a>
         </nav>
@@ -425,60 +450,68 @@
         </div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+        // Use the globally available auth and Firestore instances
+        const auth = window.auth;
+        const db = window.db;
+
         document.addEventListener('DOMContentLoaded', function() {
             // Navigation elements
             const loginBtn = document.getElementById('loginBtn');
             const logoutBtn = document.getElementById('logoutBtn');
             const myCollectionsBtn = document.getElementById('myCollectionsBtn');
-            
-            // Check authentication status on page load
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (currentUser) {
-                loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'block';
-                
-                // If it's an admin, hide myCollections link
-                if (currentUser.isAdmin) {
+
+            // Listen to auth state changes
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    loginBtn.style.display = 'none';
+                    logoutBtn.style.display = 'block';
+                    myCollectionsBtn.style.display = 'block';
+                } else {
+                    loginBtn.style.display = 'block';
+                    logoutBtn.style.display = 'none';
                     myCollectionsBtn.style.display = 'none';
                 }
-            } else {
-                loginBtn.style.display = 'block';
-                logoutBtn.style.display = 'none';
-            }
-            
+            });
+
             // Login button event
             loginBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 window.location.href = 'index.html';
             });
-            
+
             // Logout button event
             logoutBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                localStorage.removeItem('currentUser');
-                window.location.reload();
+                signOut(auth)
+                    .then(() => {
+                        // Sign-out successful
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        console.error("Logout error:", error.message);
+                        alert('Error al cerrar sesión: ' + error.message);
+                    });
             });
-            
+
             // My Collections button event
             myCollectionsBtn.addEventListener('click', function(e) {
-                // Check if user is logged in
-                const user = JSON.parse(localStorage.getItem('currentUser'));
+                e.preventDefault();
+                // Check if user is logged in via Firebase
+                const user = auth.currentUser;
                 if (user) {
-                    if (!user.isAdmin) {
-                        window.location.href = 'my-collections.html';
-                    } else {
-                        // Admin cannot access my collections
-                        alert('Los administradores no tienen acceso a Mi Colección');
-                    }
+                    window.location.href = 'my-collections.html';
                 } else {
                     // Redirect to login if not logged in
                     window.location.href = 'index.html';
                 }
             });
-            
-            // Get the selected product from localStorage
-            const selectedProduct = JSON.parse(localStorage.getItem('selectedProduct'));
+
+            // Get the selected product from sessionStorage
+            const selectedProduct = JSON.parse(sessionStorage.getItem('selectedProduct'));
             if (selectedProduct) {
                 document.getElementById('productName').textContent = selectedProduct.name;
                 document.getElementById('paymentAmount').textContent = `S/. ${selectedProduct.price.toFixed(2)} PEN`;
@@ -486,57 +519,60 @@
                 // Redirect to store if no product is selected
                 window.location.href = 'store.html';
             }
-            
+
             // Payment complete button event
             const paymentCompleteBtn = document.getElementById('paymentCompleteBtn');
             const paymentConfirmation = document.getElementById('paymentConfirmation');
-            
-            paymentCompleteBtn.addEventListener('click', function() {
+
+            paymentCompleteBtn.addEventListener('click', async function() {
                 // Show confirmation message
                 paymentConfirmation.style.display = 'block';
                 paymentCompleteBtn.style.display = 'none';
-                
-                // Simulate payment processing
-                setTimeout(function() {
-                    // Update user's purchased cards and access status
-                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                    
-                    if (currentUser && !currentUser.isAdmin) {
-                        // Add purchased card to user's collection
-                        if (!currentUser.purchasedCards) {
-                            currentUser.purchasedCards = [];
+
+                // Get the currently authenticated user
+                const user = auth.currentUser;
+                if (user) {
+                    try {
+                        // Update user's purchased cards in Firestore
+                        const userDocRef = doc(db, "users", user.uid);
+                        const userDocSnap = await getDoc(userDocRef);
+
+                        if (userDocSnap.exists()) {
+                            const userData = userDocSnap.data();
+                            const purchasedCards = userData.purchasedCards || [];
+
+                            // Add the selected product if not already in the list
+                            if (selectedProduct && !purchasedCards.includes(selectedProduct.id)) {
+                                purchasedCards.push(selectedProduct.id);
+                            }
+
+                            // Update the user document, setting canAccessCards to true after purchase
+                            await updateDoc(userDocRef, {
+                                purchasedCards: purchasedCards,
+                                canAccessCards: true
+                            });
+
+                            // Show success message and redirect
+                            setTimeout(function() {
+                                alert('¡Pago verificado! Ya puedes acceder a tu contenido en Mi Colección.');
+                                window.location.href = 'index.html';
+                            }, 2000);
+                        } else {
+                            throw new Error("Documento de usuario no encontrado");
                         }
-                        
-                        // Add the purchased product
-                        if (!currentUser.purchasedCards.includes(selectedProduct.id)) {
-                            currentUser.purchasedCards.push(selectedProduct.id);
-                        }
-                        
-                        // Update access status (in real implementation, admin would verify payment)
-                        // For demo purposes, we'll set access to true immediately
-                        currentUser.canAccessCards = true;
-                        
-                        // Save updated user data
-                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                        
-                        // Update users list in localStorage
-                        const users = JSON.parse(localStorage.getItem('users')) || [];
-                        const userIndex = users.findIndex(u => u.email === currentUser.email);
-                        if (userIndex !== -1) {
-                            users[userIndex] = currentUser;
-                            localStorage.setItem('users', JSON.stringify(users));
-                        }
-                        
-                        // Redirect to store after showing confirmation
+                    } catch (error) {
+                        console.error("Error updating user data:", error);
+                        alert('Error al actualizar tu información: ' + error.message);
+
+                        // Redirect to index anyway after showing error
                         setTimeout(function() {
-                            alert('¡Pago verificado! Ya puedes acceder a tu contenido en Mi Colección.');
                             window.location.href = 'index.html';
                         }, 2000);
-                    } else {
-                        alert('Error: Usuario no encontrado o es administrador');
-                        window.location.href = 'index.html';
                     }
-                }, 3000);
+                } else {
+                    alert('Error: Usuario no encontrado');
+                    window.location.href = 'index.html';
+                }
             });
         });
     </script>

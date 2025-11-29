@@ -6,7 +6,7 @@
     <meta name="description" content="Mi Colección - Likay">
     <meta name="keywords" content="colección, tarjetas, likay, usuario">
     <title>Mi Colección - Likay</title>
-    
+
     <!-- Schema.org markup for Google -->
     <script type="application/ld+json">
     {
@@ -16,15 +16,42 @@
         "description": "Colección de tarjetas adquiridas por el usuario"
     }
     </script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="LikayLogo.png" type="image/png">
+
+    <!-- Firebase App & Auth SDKs -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBJzr2zusCZGSm-wIIF705nzBRyQTUWg48",
+        authDomain: "likay-2ad45.firebaseapp.com",
+        projectId: "likay-2ad45",
+        storageBucket: "likay-2ad45.firebasestorage.app",
+        messagingSenderId: "126625156506",
+        appId: "1:126625156506:web:9b98abf33044cda56fbe23",
+        measurementId: "G-1KBL2LEK09"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      window.firebaseApp = app;
+      window.auth = auth;
+      window.db = db;
+    </script>
     <style>
         :root {
             --primary: #e69226;
@@ -44,13 +71,13 @@
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
@@ -58,20 +85,20 @@
             background-color: var(--light);
             overflow-x: hidden;
         }
-        
+
         h1, h2, h3, h4, h5 {
             font-family: 'Inter', sans-serif;
             font-weight: 700;
             line-height: 1.2;
         }
-        
+
         .container {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         .btn {
             display: inline-block;
             padding: 12px 24px;
@@ -83,51 +110,51 @@
             border: none;
             font-size: 16px;
         }
-        
+
         .btn-primary {
             background-color: var(--primary);
             color: white;
         }
-        
+
         .btn-primary:hover {
             background-color: #d18b09;
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
         }
-        
+
         .btn-secondary {
             background-color: var(--secondary);
             color: white;
         }
-        
+
         .btn-secondary:hover {
             background-color: #721edf;
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
         }
-        
+
         .btn-outline {
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
         }
-        
+
         .btn-outline:hover {
             background-color: var(--primary);
             color: white;
         }
-        
+
         .section {
             padding: 80px 0;
         }
-        
+
         .section-title {
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 16px;
             color: var(--gray-900);
         }
-        
+
         .section-subtitle {
             font-size: 1.2rem;
             text-align: center;
@@ -137,7 +164,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         .collections-container {
             background: white;
             border-radius: 16px;
@@ -145,14 +172,14 @@
             padding: 30px;
             margin: 20px 0;
         }
-        
+
         .collection-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
             margin-top: 20px;
         }
-        
+
         .collection-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(10px);
@@ -163,12 +190,12 @@
             transition: all 0.3s ease;
             border: 1px solid var(--glass-border);
         }
-        
+
         .collection-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
         }
-        
+
         .collection-image {
             width: 100%;
             height: 200px;
@@ -176,20 +203,20 @@
             margin-bottom: 15px;
             border-radius: 8px;
         }
-        
+
         .collection-title {
             font-size: 1.2rem;
             margin-bottom: 10px;
             color: var(--gray-800);
         }
-        
+
         .collection-actions {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-top: 15px;
         }
-        
+
         .action-btn {
             padding: 8px 15px;
             border-radius: 6px;
@@ -200,17 +227,17 @@
             align-items: center;
             gap: 5px;
         }
-        
+
         .view-btn {
             background-color: var(--primary);
             color: white;
         }
-        
+
         .download-btn {
             background-color: var(--secondary);
             color: white;
         }
-        
+
         .no-access-message {
             text-align: center;
             padding: 40px;
@@ -218,13 +245,13 @@
             border-radius: 16px;
             margin: 20px 0;
         }
-        
+
         .no-access-message i {
             font-size: 3rem;
             color: var(--gray-400);
             margin-bottom: 20px;
         }
-        
+
         .access-notice {
             background-color: #e7f5e7;
             color: #27ae60;
@@ -234,7 +261,7 @@
             margin: 20px 0;
             display: none;
         }
-        
+
         /* Navigation */
         .navbar {
             background-color: #111827; /* Fondo oscuro */
@@ -275,27 +302,27 @@
         .nav-item:hover {
             background-color: #555;
         }
-        
+
         /* Footer */
         .footer {
             background: var(--gray-900);
             color: white;
             padding: 60px 0 30px;
         }
-        
+
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 40px;
             margin-bottom: 40px;
         }
-        
+
         .footer-section h3 {
             font-size: 1.2rem;
             margin-bottom: 20px;
             color: var(--gray-100);
         }
-        
+
         .footer-links a {
             display: block;
             color: var(--gray-400);
@@ -303,24 +330,24 @@
             margin-bottom: 10px;
             transition: color 0.3s ease;
         }
-        
+
         .footer-links a:hover {
             color: white;
         }
-        
+
         .footer-bottom {
             border-top: 1px solid var(--gray-800);
             padding-top: 20px;
             text-align: center;
             color: var(--gray-400);
         }
-        
+
         .social-links {
             display: flex;
             gap: 15px;
             margin-top: 15px;
         }
-        
+
         .social-link {
             display: flex;
             align-items: center;
@@ -333,40 +360,40 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
-        
+
         .social-link:hover {
             background: var(--primary);
             transform: translateY(-3px);
         }
-        
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .section {
                 padding: 60px 0;
             }
-            
+
             .section-title {
                 font-size: 2rem;
             }
-            
+
             .collections-container {
                 padding: 20px;
             }
         }
-        
+
         @media (max-width: 480px) {
             .container {
                 padding: 0 15px;
             }
-            
+
             .section {
                 padding: 40px 0;
             }
-            
+
             .section-title {
                 font-size: 1.8rem;
             }
-            
+
             .collection-actions {
                 flex-direction: column;
             }
@@ -404,7 +431,7 @@
                         <p>Para acceder a tu colección de tarjetas, debes realizar una compra en la tienda.</p>
                         <a href="store.html" class="btn btn-primary" style="margin-top: 15px;">Ir a la Tienda</a>
                     </div>
-                    
+
                     <div class="collection-grid" id="collectionGrid" style="display: none;">
                         <!-- Collection items will be populated by JavaScript -->
                     </div>
@@ -427,147 +454,181 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>© 2025 Likay - Mi Colección - Una iniciativa de Tunki Games</p>
             </div>
         </div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+        // Use the globally available auth and Firestore instances
+        //const auth = window.auth;
+        //const db = window.db;
+
         document.addEventListener('DOMContentLoaded', function() {
             // Navigation elements
             const loginBtn = document.getElementById('loginBtn');
             const logoutBtn = document.getElementById('logoutBtn');
             const myCollectionsBtn = document.getElementById('myCollectionsBtn');
-            
+
             // Page elements
             const noAccessMessage = document.getElementById('noAccessMessage');
             const collectionGrid = document.getElementById('collectionGrid');
             const accessNotice = document.getElementById('accessNotice');
-            
-            // Check authentication status on page load
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (currentUser) {
-                loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'block';
-                
-                // If it's an admin, hide myCollections link and show message
-                if (currentUser.isAdmin) {
+
+            // Listen to auth state changes
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    loginBtn.style.display = 'none';
+                    logoutBtn.style.display = 'block';
+                    myCollectionsBtn.style.display = 'block';
+
+                    // Load user's purchased cards from Firestore
+                    loadUserData(user);
+                } else {
+                    loginBtn.style.display = 'block';
+                    logoutBtn.style.display = 'none';
                     myCollectionsBtn.style.display = 'none';
-                    noAccessMessage.innerHTML = '<h3>Panel de administrador</h3><p>Estás identificado como administrador. No tienes acceso a Mi Colección.</p><a href="admin-panel.html" class="btn btn-primary" style="margin-top: 15px;">Ir al Panel de Administración</a>';
-                    noAccessMessage.style.display = 'block';
-                    return;
+
+                    // Redirect to login if not logged in
+                    alert('Por favor inicia sesión para acceder a Mi Colección');
+                    window.location.href = 'index.html';
                 }
-            } else {
-                loginBtn.style.display = 'block';
-                logoutBtn.style.display = 'none';
-                
-                // Redirect to login if not logged in
-                alert('Por favor inicia sesión para acceder a Mi Colección');
-                window.location.href = 'index.html';
-                return;
+            });
+
+            // Function to load user data from Firestore
+            async function loadUserData(user) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        const purchasedCards = userData.purchasedCards || [];
+
+                        if (purchasedCards && purchasedCards.length > 0) {
+                            // Show access notice
+                            accessNotice.style.display = 'block';
+
+                            // Hide no access message and show collection grid
+                            noAccessMessage.style.display = 'none';
+                            collectionGrid.style.display = 'grid';
+
+                            // Add purchased cards to the collection grid
+                            purchasedCards.forEach(cardId => {
+                                // Create collection card element
+                                const cardElement = document.createElement('div');
+                                cardElement.className = 'collection-card';
+
+                                // Define card name and images based on ID
+                                let cardName, frontImage, reverseImage;
+                                switch(cardId) {
+                                    case '1':
+                                        cardName = 'Tarjeta de Ejemplo 1';
+                                        frontImage = '1.png';
+                                        reverseImage = 'InEuc.png'; // Reverse for 1.png
+                                        break;
+                                    case '3':
+                                        cardName = 'Tarjeta de Ejemplo 3';
+                                        frontImage = '3.png';
+                                        reverseImage = 'InProc.png'; // Reverse for 3.png
+                                        break;
+                                    case 'Nazca':
+                                        cardName = 'Tarjeta de Cultura Nazca';
+                                        frontImage = 'Nazca.png';
+                                        reverseImage = 'Nazca.png'; // No reverse yet, using same image
+                                        break;
+                                    case 'Wari':
+                                        cardName = 'Tarjeta de Cultura Wari';
+                                        frontImage = 'wari.png';
+                                        reverseImage = 'wari.png'; // No reverse yet, using same image
+                                        break;
+                                    default:
+                                        cardName = `Tarjeta ${cardId}`;
+                                        frontImage = `${cardId}.png`;
+                                        reverseImage = `${cardId}.png`;
+                                }
+
+                                // Set card content
+                                cardElement.innerHTML = `
+                                    <img src="${frontImage}" alt="${cardName}" class="collection-image">
+                                    <h3 class="collection-title">${cardName}</h3>
+                                    <div class="collection-actions">
+                                        <a href="${frontImage}" class="action-btn download-btn" download="tarjeta-${cardId}-frente.png">
+                                            <i class="fas fa-download"></i> Frente
+                                        </a>
+                                        <a href="${reverseImage}" class="action-btn download-btn" download="tarjeta-${cardId}-reverso.png">
+                                            <i class="fas fa-download"></i> Reverso
+                                        </a>
+                                    </div>
+                                `;
+
+                                // Add to collection grid
+                                collectionGrid.appendChild(cardElement);
+                            });
+                        } else {
+                            // User doesn't have purchases
+                            noAccessMessage.innerHTML = `
+                                <i class="fas fa-lock"></i>
+                                <h3>No tienes acceso aún</h3>
+                                <p>Para acceder a tu colección de tarjetas, debes realizar una compra en la tienda.</p>
+                                <a href="store.html" class="btn btn-primary" style="margin-top: 15px;">Ir a la Tienda</a>
+                            `;
+                            noAccessMessage.style.display = 'block';
+                            collectionGrid.style.display = 'none';
+                        }
+                    } else {
+                        // User document doesn't exist
+                        noAccessMessage.innerHTML = `
+                            <i class="fas fa-lock"></i>
+                            <h3>No tienes acceso aún</h3>
+                            <p>Para acceder a tu colección de tarjetas, debes realizar una compra en la tienda.</p>
+                            <a href="store.html" class="btn btn-primary" style="margin-top: 15px;">Ir a la Tienda</a>
+                        `;
+                        noAccessMessage.style.display = 'block';
+                        collectionGrid.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error("Error loading user data:", error);
+                    alert("Error al cargar los datos del usuario.");
+                }
             }
-            
+
             // Login button event
             loginBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 window.location.href = 'index.html';
             });
-            
+
             // Logout button event
             logoutBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                localStorage.removeItem('currentUser');
-                window.location.href = 'index.html';
+                signOut(auth)
+                    .then(() => {
+                        // Sign-out successful
+                        window.location.href = 'index.html';
+                    })
+                    .catch((error) => {
+                        console.error("Logout error:", error.message);
+                        alert('Error al cerrar sesión: ' + error.message);
+                    });
             });
-            
+
             // My Collections button event
             myCollectionsBtn.addEventListener('click', function(e) {
-                // Check if user is logged in
-                const user = JSON.parse(localStorage.getItem('currentUser'));
+                e.preventDefault();
+                // Check if user is logged in via Firebase
+                const user = auth.currentUser;
                 if (user) {
-                    if (!user.isAdmin) {
-                        window.location.href = 'my-collections.html';
-                    } else {
-                        // Redirect admin to admin panel
-                        window.location.href = 'admin-panel.html';
-                    }
+                    // In a real app, this page would already be loaded
+                    // This would be for clicking the nav link when already on the page
                 } else {
                     // Redirect to login if not logged in
                     window.location.href = 'index.html';
                 }
             });
-            
-            // Display collections based on user's purchased cards
-            if (currentUser.canAccessCards && currentUser.purchasedCards && currentUser.purchasedCards.length > 0) {
-                // Show access notice
-                accessNotice.style.display = 'block';
-                
-                // Hide no access message and show collection grid
-                noAccessMessage.style.display = 'none';
-                collectionGrid.style.display = 'grid';
-                
-                // Add purchased cards to the collection grid
-                const purchasedCards = currentUser.purchasedCards;
-                
-                purchasedCards.forEach(cardId => {
-                    // Create collection card element
-                    const cardElement = document.createElement('div');
-                    cardElement.className = 'collection-card';
-                    
-                    // Define card name based on ID
-                    let cardName, cardImage;
-                    switch(cardId) {
-                        case '1':
-                            cardName = 'Tarjeta de Ejemplo 1';
-                            cardImage = '1.png';
-                            break;
-                        case '3':
-                            cardName = 'Tarjeta de Ejemplo 3';
-                            cardImage = '3.png';
-                            break;
-                        case 'Nazca':
-                            cardName = 'Tarjeta de Cultura Nazca';
-                            cardImage = 'Nazca.png';
-                            break;
-                        case 'Wari':
-                            cardName = 'Tarjeta de Cultura Wari';
-                            cardImage = 'wari.png';
-                            break;
-                        default:
-                            cardName = `Tarjeta ${cardId}`;
-                            cardImage = `${cardId}.png`;
-                    }
-                    
-                    // Set card content
-                    cardElement.innerHTML = `
-                        <img src="${cardImage}" alt="${cardName}" class="collection-image">
-                        <h3 class="collection-title">${cardName}</h3>
-                        <div class="collection-actions">
-                            <a href="${cardImage}" class="action-btn view-btn" target="_blank">
-                                <i class="fas fa-eye"></i> Ver Frente
-                            </a>
-                            <a href="reverse-${cardImage}" class="action-btn download-btn" download>
-                                <i class="fas fa-download"></i> Reverso
-                            </a>
-                        </div>
-                    `;
-                    
-                    // Add to collection grid
-                    collectionGrid.appendChild(cardElement);
-                });
-            } else {
-                // User doesn't have access yet or no purchases
-                noAccessMessage.innerHTML = `
-                    <i class="fas fa-lock"></i>
-                    <h3>No tienes acceso aún</h3>
-                    <p>Para acceder a tu colección de tarjetas, debes realizar una compra en la tienda.</p>
-                    <a href="store.html" class="btn btn-primary" style="margin-top: 15px;">Ir a la Tienda</a>
-                `;
-                noAccessMessage.style.display = 'block';
-                collectionGrid.style.display = 'none';
-            }
         });
     </script>
 </body>
