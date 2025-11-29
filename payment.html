@@ -6,7 +6,7 @@
     <meta name="description" content="Pago con Yape - Likay">
     <meta name="keywords" content="pago, yape, plin, likay, tienda">
     <title>Pago - Likay</title>
-    
+
     <!-- Schema.org markup for Google -->
     <script type="application/ld+json">
     {
@@ -16,12 +16,12 @@
         "description": "Página de pago para compras en Likay"
     }
     </script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" href="LikayLogo.png" type="image/png">
@@ -47,8 +47,10 @@
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
+      const db = getFirestore(app);
       window.firebaseApp = app;
       window.auth = auth;
+      window.db = db;
     </script>
     <style>
         :root {
@@ -69,13 +71,13 @@
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
@@ -83,20 +85,20 @@
             background-color: var(--light);
             overflow-x: hidden;
         }
-        
+
         h1, h2, h3, h4, h5 {
             font-family: 'Inter', sans-serif;
             font-weight: 700;
             line-height: 1.2;
         }
-        
+
         .container {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         .btn {
             display: inline-block;
             padding: 12px 24px;
@@ -108,51 +110,51 @@
             border: none;
             font-size: 16px;
         }
-        
+
         .btn-primary {
             background-color: var(--primary);
             color: white;
         }
-        
+
         .btn-primary:hover {
             background-color: #d18b09;
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
         }
-        
+
         .btn-secondary {
             background-color: var(--secondary);
             color: white;
         }
-        
+
         .btn-secondary:hover {
             background-color: #721edf;
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
         }
-        
+
         .btn-outline {
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
         }
-        
+
         .btn-outline:hover {
             background-color: var(--primary);
             color: white;
         }
-        
+
         .section {
             padding: 80px 0;
         }
-        
+
         .section-title {
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 16px;
             color: var(--gray-900);
         }
-        
+
         .section-subtitle {
             font-size: 1.2rem;
             text-align: center;
@@ -162,7 +164,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         .payment-container {
             display: flex;
             flex-direction: column;
@@ -175,7 +177,7 @@
             max-width: 600px;
             margin: 40px auto;
         }
-        
+
         .payment-qr {
             width: 250px;
             height: 250px;
@@ -189,31 +191,31 @@
             overflow: hidden;
             border: 1px solid var(--gray-200);
         }
-        
+
         .payment-qr img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
-        
+
         .payment-info {
             text-align: center;
             margin: 20px 0;
         }
-        
+
         .payment-amount {
             font-size: 2rem;
             font-weight: 700;
             color: var(--primary);
             margin: 10px 0;
         }
-        
+
         .payment-message {
             font-size: 1.1rem;
             color: var(--gray-700);
             margin: 20px 0;
         }
-        
+
         .payment-complete-btn {
             display: inline-block;
             width: 100%;
@@ -229,11 +231,11 @@
             transition: background-color 0.3s ease;
             margin: 20px 0;
         }
-        
+
         .payment-complete-btn:hover {
             background-color: #d18b09;
         }
-        
+
         .payment-confirmation {
             text-align: center;
             padding: 20px;
@@ -242,7 +244,7 @@
             margin: 20px 0;
             display: none;
         }
-        
+
         /* Navigation */
         .navbar {
             background-color: #111827; /* Fondo oscuro */
@@ -283,27 +285,27 @@
         .nav-item:hover {
             background-color: #555;
         }
-        
+
         /* Footer */
         .footer {
             background: var(--gray-900);
             color: white;
             padding: 60px 0 30px;
         }
-        
+
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 40px;
             margin-bottom: 40px;
         }
-        
+
         .footer-section h3 {
             font-size: 1.2rem;
             margin-bottom: 20px;
             color: var(--gray-100);
         }
-        
+
         .footer-links a {
             display: block;
             color: var(--gray-400);
@@ -311,24 +313,24 @@
             margin-bottom: 10px;
             transition: color 0.3s ease;
         }
-        
+
         .footer-links a:hover {
             color: white;
         }
-        
+
         .footer-bottom {
             border-top: 1px solid var(--gray-800);
             padding-top: 20px;
             text-align: center;
             color: var(--gray-400);
         }
-        
+
         .social-links {
             display: flex;
             gap: 15px;
             margin-top: 15px;
         }
-        
+
         .social-link {
             display: flex;
             align-items: center;
@@ -341,46 +343,46 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
-        
+
         .social-link:hover {
             background: var(--primary);
             transform: translateY(-3px);
         }
-        
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .section {
                 padding: 60px 0;
             }
-            
+
             .section-title {
                 font-size: 2rem;
             }
-            
+
             .payment-container {
                 margin: 20px;
                 padding: 15px;
             }
-            
+
             .payment-qr {
                 width: 200px;
                 height: 200px;
             }
         }
-        
+
         @media (max-width: 480px) {
             .container {
                 padding: 0 15px;
             }
-            
+
             .section {
                 padding: 40px 0;
             }
-            
+
             .section-title {
                 font-size: 1.8rem;
             }
-            
+
             .payment-qr {
                 width: 150px;
                 height: 150px;
@@ -395,7 +397,7 @@
         <nav class="navbar-nav">
             <a href="index.html" class="nav-item">Inicio</a>
             <a href="store.html" class="nav-item">Tienda</a>
-            <a href="#" class="nav-item" id="myCollectionsBtn">Mi Colección</a>
+            <a href="my-collections.html" class="nav-item" id="myCollectionsBtn">Mi Colección</a>
             <a href="#" class="nav-item" id="loginBtn">Iniciar Sesión</a>
             <a href="#" class="nav-item" id="logoutBtn" style="display: none;">Cerrar Sesión</a>
         </nav>
@@ -412,14 +414,14 @@
                 <div class="payment-qr">
                     <img src="yapeQR.png" alt="Código QR Yape">
                 </div>
-                
+
                 <div class="payment-info">
                     <p class="payment-message">Escanea este código QR con la aplicación de Yape o Plin</p>
                     <p class="payment-amount" id="paymentAmount">S/. 1.00 PEN</p>
                     <p class="payment-message">La verificación del pago puede tomar algunos minutos. Por favor, sea paciente.</p>
-                    
+
                     <button class="payment-complete-btn" id="paymentCompleteBtn">Ya completé el pago</button>
-                    
+
                     <div class="payment-confirmation" id="paymentConfirmation">
                         <p><i class="fas fa-check-circle" style="color: #27ae60; font-size: 2rem;"></i></p>
                         <p>¡Gracias por tu compra! Estamos verificando tu pago...</p>
@@ -443,7 +445,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>© 2025 Likay - Proceso de Pago - Una iniciativa de Tunki Games</p>
             </div>
@@ -455,8 +457,8 @@
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
         // Use the globally available auth and Firestore instances
-        const auth = window.auth;
-        const db = window.db;
+        //const auth = window.auth;
+        //const db = window.db;
 
         document.addEventListener('DOMContentLoaded', function() {
             // Navigation elements
@@ -489,7 +491,7 @@
                 signOut(auth)
                     .then(() => {
                         // Sign-out successful
-                        window.location.reload();
+                        window.location.href = 'index.html';
                     })
                     .catch((error) => {
                         console.error("Logout error:", error.message);
